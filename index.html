@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>陈风的个人网站</title>
+  <title>My First Web Page</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -22,7 +22,11 @@
         padding: 15px;
         line-height: 1.7;
       ">
-    <p>你好，我是陈风</p>
+    <p>你好，我是陈伟权</p>
+    <p>你好，我是陈伟权</p>
+    <p>你好，我是陈伟权</p>
+    <p>你好，我是陈伟权</p>
+
     <p>很高兴你点开我的网站</p>
     <p>你想刷b站吗</p>
     <p>如果你想的话</p>
@@ -40,6 +44,16 @@
       ">
     <p>我的网站</p>
     <a href="https://www.bilibili.com/">友情链接</a>
+    <button id = "dzs" onclick = "dianzhan()">0</button>
+    <script>
+      function dianzan(){
+        let dianzanshubiaoqian = window.document.getElementById('dzs');
+        let dianzanshu = parseInt(dianzanshubiaoqian.innerText);
+        let xinshuzi = dianzanshu + 1;
+        dianzanshubiaoqian.innerText = xinshuzi;
+        return
+      }
+    </script>
   </div>
 </body>
 
