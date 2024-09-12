@@ -2,59 +2,70 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My First Web Page</title>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
-  <div style="background-color: #f1f1f1; text-align: center; padding: 40px">
-    <!-- <img src="C:\Users\steve\Pictures\Screenshots\屏幕截图 2024-09-02 235727.png" alt="陈伟权" width="80px" height="80px" /> -->
-    <a href="https://imgse.com/i/pAV0b7V"><img src="https://s21.ax1x.com/2024/09/03/pAV0b7V.png" alt="陈伟权" width="80px"
-        height="80px" /></a>
-  </div>
-  <div style="
-        background-color: aliceblue;
-        width: 700px;
-        /* max-width: 700px; */
-        margin: 30px auto;
-        padding: 15px;
-        line-height: 1.7;
-      ">
-    <p>你好，我是陈伟权</p>
-    <p>你好，我是陈伟权</p>
-    <p>你好，我是陈伟权</p>
-    <p>你好，我是陈伟权</p>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-4xl mx-auto bg-white p-6 rounded shadow">
+        <h1 class="text-2xl font-bold mb-4">Attendance Tracker</h1>
+        <div id="classForms" class="space-y-6">
+            <!-- Class forms will be inserted here -->
+        </div>
+        <div id="results" class="mt-6"></div>
+    </div>
 
-    <p>很高兴你点开我的网站</p>
-    <p>你想刷b站吗</p>
-    <p>如果你想的话</p>
-    <p>可以点击下方的友情链接哦</p>
-    <p>哈哈哈……</p>
-    <p></p>
-  </div>
-  <div style="
-        background-color: aquamarine;
-        width: 700px;
-        text-align: center;
-        margin: 30px auto;
-        padding: 15px;
-        font-size: 12px;
-      ">
-    <p>我的网站</p>
-    <a href="https://www.bilibili.com/">友情链接</a>
-    <button id = "dzs" onclick = "dianzhan()">0</button>
     <script>
-      function dianzan(){
-        let dianzanshubiaoqian = window.document.getElementById('dzs');
-        let dianzanshu = parseInt(dianzanshubiaoqian.innerText);
-        let xinshuzi = dianzanshu + 1;
-        dianzanshubiaoqian.innerText = xinshuzi;
-        return
-      }
+        function createClassForm(classNumber) {
+            const form = document.createElement('form');
+            form.classList.add('space-y-4');
+            form.innerHTML = `
+                <h2 class="text-xl font-semibold">Class ${classNumber}</h2>
+                <div>
+                    <label for="class${classNumber}" class="block font-medium">Enter details:</label>
+                    <input type="text" id="class${classNumber}" class="w-full p-2 border rounded" placeholder="应到XXX人，实到XXX人，一名由于XXX未到...">
+                </div>
+                <button type="button" onclick="submitClass(${classNumber})" class="bg-blue-500 text-white px-4 py-2 rounded">Submit Class ${classNumber}</button>
+            `;
+            return form;
+        }
+
+        function submitClass(classNumber) {
+            const classInput = document.getElementById('class' + classNumber).value;
+            const [expected, actual, ...reasons] = classInput.split('，');
+            const expectedNumber = parseInt(expected.replace('应到', '').replace('人', ''));
+            const actualNumber = parseInt(actual.replace('实到', '').replace('人', ''));
+
+            const classDetails = `<p><strong>Class ${classNumber}:</strong> ${classInput}</p>`;
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML += classDetails;
+
+            // Update total counts
+            updateTotalCounts(expectedNumber, actualNumber);
+        }
+
+        let totalExpected = 0;
+        let totalActual = 0;
+
+        function updateTotalCounts(expected, actual) {
+            totalExpected += expected;
+            totalActual += actual;
+
+            const totalDetails = `<p><strong>Total Expected:</strong> ${totalExpected} people</p>
+                                  <p><strong>Total Actual:</strong> ${totalActual} people</p>`;
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = totalDetails + resultsDiv.innerHTML;
+        }
+
+        // Create forms for each class
+        const classFormsDiv = document.getElementById('classForms');
+        for (let i = 1; i <= 6; i++) {
+            classFormsDiv.appendChild(createClassForm(i));
+        }
     </script>
-  </div>
 </body>
 
 </html>
