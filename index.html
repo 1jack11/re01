@@ -10,24 +10,26 @@
 
 <body class="bg-gray-100 p-6">
     <div class="max-w-4xl mx-auto bg-white p-6 rounded shadow">
-        <h1 class="text-2xl font-bold mb-4">Attendance Tracker</h1>
+        <h1 class="text-2xl font-bold mb-4">人员统计</h1>
         <div id="classForms" class="space-y-6">
-            <!-- Class forms will be inserted here -->
+            
         </div>
         <div id="results" class="mt-6"></div>
     </div>
 
     <script>
+        const classData = {};
+
         function createClassForm(classNumber) {
             const form = document.createElement('form');
             form.classList.add('space-y-4');
             form.innerHTML = `
-                <h2 class="text-xl font-semibold">Class ${classNumber}</h2>
+                <h2 class="text-xl font-semibold">${classNumber} 区队</h2>
                 <div>
-                    <label for="class${classNumber}" class="block font-medium">Enter details:</label>
+                    <label for="class${classNumber}" class="block font-medium">人员情况:</label>
                     <input type="text" id="class${classNumber}" class="w-full p-2 border rounded" placeholder="应到XXX人，实到XXX人，一名由于XXX未到...">
                 </div>
-                <button type="button" onclick="submitClass(${classNumber})" class="bg-blue-500 text-white px-4 py-2 rounded">Submit Class ${classNumber}</button>
+                <button type="button" onclick="submitClass(${classNumber})" class="bg-blue-500 text-white px-4 py-2 rounded">上传</button>
             `;
             return form;
         }
@@ -38,29 +40,50 @@
             const expectedNumber = parseInt(expected.replace('应到', '').replace('人', ''));
             const actualNumber = parseInt(actual.replace('实到', '').replace('人', ''));
 
-            const classDetails = `<p><strong>Class ${classNumber}:</strong> ${classInput}</p>`;
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML += classDetails;
+            // 更新数据
+            if (classData[classNumber]) {
+                totalExpected -= classData[classNumber].expected;
+                totalActual -= classData[classNumber].actual;
+            }
 
-            // Update total counts
-            updateTotalCounts(expectedNumber, actualNumber);
+            // 更新区队信息
+            classData[classNumber] = { expected: expectedNumber, actual: actualNumber, reasons: reasons.join('，') };
+
+            // 更新总体人员信息
+            updateTotalCounts();
+            updateClassDetails();
         }
 
         let totalExpected = 0;
         let totalActual = 0;
 
-        function updateTotalCounts(expected, actual) {
-            totalExpected += expected;
-            totalActual += actual;
+        function updateTotalCounts() {
+            totalExpected = 0;
+            totalActual = 0;
 
-            const totalDetails = `<p><strong>Total Expected:</strong> ${totalExpected} people</p>
-                                  <p><strong>Total Actual:</strong> ${totalActual} people</p>`;
+            for (const classNumber in classData) {
+                totalExpected += classData[classNumber].expected;
+                totalActual += classData[classNumber].actual;
+            }
+
+            const totalDetails = `<p><strong>总体应到:</strong> ${totalExpected} 人</p>
+                                  <p><strong>总体实到:</strong> ${totalActual} 人</p>`;
 
             const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = totalDetails + resultsDiv.innerHTML;
+            resultsDiv.innerHTML = totalDetails;
         }
 
-        // Create forms for each class
+        function updateClassDetails() {
+            let classDetails = '';
+            for (const classNumber in classData) {
+                classDetails += `<p><strong>${classNumber} 区队:</strong> 应到${classData[classNumber].expected}人，实到${classData[classNumber].actual}人，${classData[classNumber].reasons}</p>`;
+            }
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML += classDetails;
+        }
+
+        
         const classFormsDiv = document.getElementById('classForms');
         for (let i = 1; i <= 6; i++) {
             classFormsDiv.appendChild(createClassForm(i));
